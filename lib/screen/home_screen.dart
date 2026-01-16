@@ -1,6 +1,6 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
-// import 'package:flutter_typeahead/flutter_typeahead.dart';
+import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:weather_app/screen/forecast_screen.dart';
 import 'package:weather_app/services/weather_services.dart';
@@ -15,7 +15,7 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   //instanciar la clase que nos ofrece el servicio
   Map<String, dynamic>? _currentWeather;
-  String city = "Raleigh";
+  String city = "Santo Domingo";
   final WeatherServices _weatherServices = WeatherServices();
 
   @override
@@ -28,9 +28,6 @@ class _HomeScreenState extends State<HomeScreen> {
   Future<void> _fetchForecastData() async {
     try {
       final forecastData = await _weatherServices.fetchCurrentWeather(city);
-
-      if (!mounted) return;
-
       setState(() {
         _currentWeather = forecastData;
       });
@@ -39,8 +36,59 @@ class _HomeScreenState extends State<HomeScreen> {
     }
   }
 
-
   //metodo para bucar una ciudad
+  void _showCitySelectionDialog() {
+    showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: const Text('Enter a City'),
+            content: TypeAheadField(
+              builder: (context, controller, focusNode) {
+                return TextField(
+                    controller: controller,
+                    focusNode: focusNode,
+                    autofocus: true,
+                    decoration: InputDecoration(
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      labelText: 'City',
+                    ));
+              },
+              itemBuilder: (context, suggestion) {
+                final Map<String, dynamic> cityData = suggestion as Map<String, dynamic>;
+                return ListTile(
+                  title: Text(cityData['name']),
+                  subtitle: Text("${cityData['region']}, ${cityData['country']}"),
+                );
+              },
+              onSelected: (suggestion) {
+                final Map<String, dynamic> cityData = suggestion as Map<String, dynamic>;
+                setState(() {
+                  city = cityData['name'];
+                });
+              },
+              suggestionsCallback: (search) async {
+                return await _weatherServices.fetchCitySuggestionWeather(search);
+              },
+            ),
+            actions: [
+              TextButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  child: const Text('Cancel')),
+              TextButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                    _fetchForecastData();
+                  },
+                  child: const Text('Submit')),
+            ],
+          );
+        });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -80,7 +128,7 @@ class _HomeScreenState extends State<HomeScreen> {
           children: [
             const SizedBox(height: 20),
             InkWell(
-              onTap: () {},
+              onTap: _showCitySelectionDialog,
               child: Text(
                 _currentWeather!['location']['name'],
                 textAlign: TextAlign.center,
@@ -160,7 +208,7 @@ class _HomeScreenState extends State<HomeScreen> {
               children: [
                 _buildWeatherDetails("Humidity", Icons.water_drop,
                     '${_currentWeather!['current']['humidity']}%'),
-                _buildWeatherDetails("Wind (km/h)", Icons.air,
+                _buildWeatherDetails("Wind (KPH)", Icons.air,
                     _currentWeather!['current']['wind_kph']),
               ],
             ),
