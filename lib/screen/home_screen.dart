@@ -220,7 +220,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 onPressed: () {
                   Navigator.push(context, MaterialPageRoute(
                     builder: (context) {
-                      return const ForecastScreen();
+                      return ForecastScreen(city: city);
                     },
                   ));
                 },

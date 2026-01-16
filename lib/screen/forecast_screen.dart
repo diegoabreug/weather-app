@@ -4,7 +4,8 @@ import 'package:google_fonts/google_fonts.dart';
 
 
 class ForecastScreen extends StatefulWidget {
-  const ForecastScreen({super.key,});
+  final String city;
+  const ForecastScreen({super.key, required this.city});
 
   @override
   State<ForecastScreen> createState() => _ForecastScreenState();
@@ -23,7 +24,7 @@ class _ForecastScreenState extends State<ForecastScreen> {
 
   Future<void> _fetchForecastData() async{
     try{
-      final forecastData = await _weatherServices.fetch7DaysWeather("Santo Domingo");
+      final forecastData = await _weatherServices.fetch7DaysWeather(widget.city);
       setState(() {
         _forecast = forecastData['forecast']['forecastday'];
       });
@@ -38,7 +39,7 @@ class _ForecastScreenState extends State<ForecastScreen> {
     return SafeArea(
       child: Scaffold(
           appBar: AppBar(
-            title: Text("7-Day Forecast", style: GoogleFonts.lato(color: Colors.white)),
+            title: Text("7-Day Forecast: ${widget.city}", style: GoogleFonts.lato(color: Colors.white)),
             backgroundColor: const Color(0xff1a2344),
             iconTheme: const IconThemeData(color: Colors.white),
           ),
