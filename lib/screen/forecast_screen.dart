@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:weather_app/services/weather_services.dart';
 import 'package:google_fonts/google_fonts.dart';
-
+import 'package:weather_app/services/weather_services.dart';
 
 class ForecastScreen extends StatefulWidget {
   final String city;
@@ -12,7 +11,6 @@ class ForecastScreen extends StatefulWidget {
 }
 
 class _ForecastScreenState extends State<ForecastScreen> {
-
   final WeatherServices _weatherServices = WeatherServices();
   List<dynamic>? _forecast;
 
@@ -22,9 +20,10 @@ class _ForecastScreenState extends State<ForecastScreen> {
     _fetchForecastData();
   }
 
-  Future<void> _fetchForecastData() async{
-    try{
-      final forecastData = await _weatherServices.fetch7DaysWeather(widget.city);
+  Future<void> _fetchForecastData() async {
+    try {
+      final forecastData =
+      await _weatherServices.fetch7DaysWeather(widget.city);
       setState(() {
         _forecast = forecastData['forecast']['forecastday'];
       });
@@ -33,20 +32,23 @@ class _ForecastScreenState extends State<ForecastScreen> {
     }
   }
 
-
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Scaffold(
-          appBar: AppBar(
-            title: Text("7-Day Forecast: ${widget.city}", style: GoogleFonts.lato(color: Colors.white)),
-            backgroundColor: const Color(0xff1a2344),
-            iconTheme: const IconThemeData(color: Colors.white),
-          ),
-          body:
+    return Scaffold(
+      extendBodyBehindAppBar: true,
+      appBar: AppBar(
+        title: Text(
+          "7-Day Forecast: ${widget.city}",
+          style: GoogleFonts.lato(color: Colors.white),
+        ),
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        iconTheme: const IconThemeData(color: Colors.white),
+      ),
+      body: Stack(
+        children: [
+          // 🌈 FULL SCREEN BACKGROUND
           Container(
-            width: double.infinity,
-            height: double.infinity,
             decoration: const BoxDecoration(
               gradient: LinearGradient(
                 begin: Alignment.topCenter,
@@ -59,32 +61,72 @@ class _ForecastScreenState extends State<ForecastScreen> {
                 ],
               ),
             ),
+          ),
+
+          // 📱 CONTENT
+          SafeArea(
             child: _forecast == null
-                ? const Center(child: CircularProgressIndicator(color: Colors.white))
+                ? const Center(
+              child: CircularProgressIndicator(color: Colors.white),
+            )
                 : ListView.builder(
+              padding: const EdgeInsets.only(top: 16),
               itemCount: _forecast!.length,
               itemBuilder: (context, index) {
                 final day = _forecast![index];
-                return ListTile(
-                  leading: Image.network(
-                    "https:${day['day']['condition']['icon']}",
-                    width: 50,
-                    height: 50,
+
+                return Container(
+                  margin: const EdgeInsets.symmetric(
+                      horizontal: 16, vertical: 8),
+                  decoration: BoxDecoration(
+                    color: Colors.white.withOpacity(0.12),
+                    borderRadius: BorderRadius.circular(12),
                   ),
-                  title: Text(day['date'], style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
-                  subtitle: Text(day['day']['condition']['text'], style: const TextStyle(color: Colors.white70)),
-                  trailing: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.end,
-                    children: [
-                      Text("Max: ${day['day']['maxtemp_c']}°", style: const TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold)),
-                      Text("Min: ${day['day']['mintemp_c']}°", style: const TextStyle(color: Colors.white70, fontSize: 14)),
-                    ],
+                  child: ListTile(
+                    leading: Image.network(
+                      "https:${day['day']['condition']['icon']}",
+                      width: 50,
+                      height: 50,
+                    ),
+                    title: Text(
+                      day['date'],
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    subtitle: Text(
+                      day['day']['condition']['text'],
+                      style:
+                      const TextStyle(color: Colors.white70),
+                    ),
+                    trailing: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      children: [
+                        Text(
+                          "Max: ${day['day']['maxtemp_c'].toStringAsFixed(1)}°",
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        Text(
+                          "Min: ${day['day']['mintemp_c'].toStringAsFixed(1)}°",
+                          style: const TextStyle(
+                            color: Colors.white70,
+                            fontSize: 14,
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 );
               },
             ),
-          )
+          ),
+        ],
       ),
     );
   }
