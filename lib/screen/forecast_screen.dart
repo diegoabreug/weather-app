@@ -79,7 +79,6 @@ class _ForecastScreenState extends State<ForecastScreen> {
                   margin: const EdgeInsets.symmetric(
                       horizontal: 16, vertical: 8),
                   decoration: BoxDecoration(
-                    // CORRECCIÓN AQUÍ: Usamos .withValues(alpha: ...)
                     color: Colors.white.withValues(alpha: 0.12),
                     borderRadius: BorderRadius.circular(12),
                   ),
