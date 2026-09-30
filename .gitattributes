@@ -1,0 +1,7 @@
+# Count only Dart in GitHub language stats (platform folders are generated)
+android/** linguist-vendored
+ios/** linguist-vendored
+linux/** linguist-vendored
+macos/** linguist-vendored
+windows/** linguist-vendored
+web/** linguist-vendored
