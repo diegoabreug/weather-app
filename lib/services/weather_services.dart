@@ -3,9 +3,10 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 
 class WeatherServices{
-  final String apiKey = "84593a6c28254b6abb1191413261201";
-  final String forecastBaseUrl = "http://api.weatherapi.com/v1/forecast.json";
-  final String searchBaseUrl = "http://api.weatherapi.com/v1/search.json";
+  // Pass at build/run time: flutter run --dart-define=WEATHER_API_KEY=your_key
+  static const String apiKey = String.fromEnvironment('WEATHER_API_KEY');
+  final String forecastBaseUrl = "https://api.weatherapi.com/v1/forecast.json";
+  final String searchBaseUrl = "https://api.weatherapi.com/v1/search.json";
 
   //metodo para traer el clima actual
   Future<Map<String, dynamic>> fetchCurrentWeather(String city) async{

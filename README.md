@@ -1,16 +1,43 @@
-# weather_app
+# Weather App
 
-A new Flutter project.
+A Flutter weather app with current conditions, a 7-day forecast, city search with autocomplete, and weather for your current location.
 
-## Getting Started
+## Features
 
-This project is a starting point for a Flutter application.
+- Current weather for any city
+- 7-day forecast screen
+- City search with autocomplete (`flutter_typeahead`)
+- Weather for your current location with `geolocator`
+- Data from the [WeatherAPI.com](https://www.weatherapi.com/) REST API over HTTPS
 
-A few resources to get you started if this is your first Flutter project:
+## Tech stack
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+- Flutter / Dart
+- http, geolocator, flutter_typeahead, google_fonts
+- WeatherAPI.com
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+## Getting started
+
+Requires the [Flutter SDK](https://docs.flutter.dev/get-started/install).
+
+```bash
+git clone https://github.com/diegoabreug/weather-app.git
+cd weather-app
+flutter pub get
+flutter run --dart-define=WEATHER_API_KEY=your_api_key
+```
+
+> Get a free API key at [weatherapi.com](https://www.weatherapi.com/). The key is passed at build time and is never stored in the code.
+
+## Project structure
+
+```
+lib/
+├── main.dart
+├── services/weather_services.dart   # WeatherAPI client
+└── screen/                          # Home and forecast screens
+```
+
+## Author
+
+**Diego Abreu** · [GitHub](https://github.com/diegoabreug)
